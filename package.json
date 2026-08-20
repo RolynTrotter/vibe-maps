@@ -15,7 +15,8 @@
     "validate": "node tools/validate.mjs",
     "vendor": "node tools/vendor.mjs",
     "start": "node tools/serve.mjs",
-    "icons": "node tools/make-icons.mjs"
+    "icons": "node tools/make-icons.mjs",
+    "fetch:a10": "node tools/fetch-a10-appendix.mjs"
   },
   "devDependencies": {
     "mapshaper": "^0.6.109",

@@ -65,8 +65,50 @@ districts, and caste disadvantage lives inside districts.** The Primary Census
 Abstract does not break its figures out by caste, so no map built from it can
 show how SC people fare — only where they are.
 
-The fix is the PCA-SC and PCA-ST tables, which compute the same abstract for the
-SC and ST populations alone. Getting those is the top item on the roadmap.
+The fix would be a table that breaks these figures out by caste. See below for
+what is actually available.
+
+## Census table A-10: what it does and doesn't give
+
+Verified against the live census catalogue, not assumed. `npm run fetch:a10`
+downloads it.
+
+| Table | Grain | Carries |
+|---|---|---|
+| **A-10** | caste × **state** × T/R/U | population, literacy, workers, industrial category |
+| **A-10 Appendix** | caste × **district** × T/R/U | population only |
+
+So there is no district-level SC literacy or worker breakdown in either: the
+table with the outcome columns stops at state level, and the table that reaches
+district level carries population only. **A caste-*gap* map still needs a source
+neither of these provides.**
+
+What A-10 Appendix *does* give is arguably more interesting than what was
+originally sought: the SC aggregate broken into the **individual castes** —
+Ad Dharmi, Balmiki, Mazhabi, Mahar, Adi Dravida, Paraiyan — by district. Punjab
+lists 40; Maharashtra's largest is Mahar at 8.0 million (the Ambedkarite
+community, which is why the Buddhist map behaves the way it does inside that
+state); Tamil Nadu's is Adi Dravida at 7.2 million.
+
+The join to the existing geometry is trivial: the Appendix's `Area name` field
+ends in the census district code — `District - Amritsar 049` → `censuscode 49`.
+Checked across three states: Punjab 20/20, Maharashtra 35/35, Tamil Nadu 32/32,
+zero unmatched.
+
+### Getting the files
+
+Two obstacles, both handled by `tools/fetch-a10-appendix.mjs`:
+
+1. **censusindia.gov.in serves an incomplete TLS chain.** It sends the leaf and
+   omits the `emSign SSL CA - G1` intermediate, so curl, node and python all
+   fail with "unable to get local issuer certificate" while browsers work fine
+   (they chase the AIA extension themselves). The fetcher downloads the
+   intermediate and supplies it — completing the chain, not weakening
+   verification.
+2. **A WAF rejects the NADA `/api/catalog/{id}` endpoint** and any request
+   without a browser User-Agent. The `/api/catalog/search` endpoint works, and
+   the catalogue *HTML* page carries the download link, so the file id is
+   scraped from there.
 
 ## Correlations quoted in the app
 

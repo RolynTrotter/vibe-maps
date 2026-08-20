@@ -169,8 +169,14 @@ looks.
 
 ## Roadmap
 
-- **PCA-SC / PCA-ST** — the same abstract computed for the SC and ST populations
-  alone, which would turn these from headcount maps into caste-*gap* maps. The
-  single biggest upgrade available.
+- **Individual castes by district.** Census table A-10 Appendix breaks the SC
+  aggregate into the specific castes — Ad Dharmi, Balmiki, Mazhabi, Mahar, Adi
+  Dravida, Paraiyan — for every district. `npm run fetch:a10` downloads it and
+  the join to the existing geometry is verified clean (Punjab 20/20,
+  Maharashtra 35/35, Tamil Nadu 32/32). Not yet built into the app.
+- **A caste-gap map** — SC literacy against non-SC literacy in the same
+  district — remains blocked. A-10 has the outcome columns but stops at state
+  level; A-10 Appendix reaches district level but carries population only. See
+  `docs/data.md`.
 - Sub-district (tehsil/taluk) resolution — the reason the tile pipeline exists.
 - A second dataset that is not India, to prove the manifest abstraction.
