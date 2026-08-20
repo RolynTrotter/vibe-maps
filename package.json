@@ -1,0 +1,25 @@
+{
+  "name": "vibe-maps",
+  "version": "0.1.0",
+  "description": "Phone-friendly interactive choropleths of demographic data — starting with caste in the 2011 Census of India.",
+  "type": "module",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RolynTrotter/vibe-maps.git"
+  },
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "test": "node --test test/*.test.mjs",
+    "build:india": "node tools/build-india-2011.mjs",
+    "validate": "node tools/validate.mjs",
+    "vendor": "node tools/vendor.mjs",
+    "start": "node tools/serve.mjs",
+    "icons": "node tools/make-icons.mjs"
+  },
+  "devDependencies": {
+    "mapshaper": "^0.6.109",
+    "maplibre-gl": "^5.9.0",
+    "pmtiles": "^4.4.0"
+  }
+}

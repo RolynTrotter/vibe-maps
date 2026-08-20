@@ -1,0 +1,355 @@
+/*
+ * vibe-maps
+ *
+ * Phone first: the map owns the screen and everything else lives in a sheet
+ * that slides up over it. At >=900px that sheet becomes a fixed left column
+ * and the map takes the remainder.
+ *
+ * Colour tokens are defined once on :root for light, then redefined under
+ * both the prefers-color-scheme media query and the [data-theme] attribute,
+ * so the in-app toggle wins in both directions and the OS setting applies
+ * when the user has not chosen.
+ */
+
+:root {
+  color-scheme: light;
+  --surface-0: #f2f1ee;
+  --surface-1: #fcfcfb;
+  --surface-2: #ffffff;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #7c7a75;
+  --border: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.24);
+  --accent: #256abf;
+  --accent-ink: #ffffff;
+  --caveat-bg: rgba(235, 104, 52, 0.10);
+  --caveat-border: #eb6834;
+  --shadow: 0 6px 28px rgba(0, 0, 0, 0.16);
+  --panel-h: 52vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --surface-0: #121211;
+    --surface-1: #1a1a19;
+    --surface-2: #232322;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #918f86;
+    --border: rgba(255, 255, 255, 0.14);
+    --border-strong: rgba(255, 255, 255, 0.28);
+    --accent: #4a9fff;
+    --accent-ink: #08131f;
+    --caveat-bg: rgba(255, 100, 25, 0.14);
+    --caveat-border: #ff6419;
+    --shadow: 0 6px 28px rgba(0, 0, 0, 0.5);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --surface-0: #121211;
+  --surface-1: #1a1a19;
+  --surface-2: #232322;
+  --text-primary: #ffffff;
+  --text-secondary: #c3c2b7;
+  --text-muted: #918f86;
+  --border: rgba(255, 255, 255, 0.14);
+  --border-strong: rgba(255, 255, 255, 0.28);
+  --accent: #4a9fff;
+  --accent-ink: #08131f;
+  --caveat-bg: rgba(255, 100, 25, 0.14);
+  --caveat-border: #ff6419;
+  --shadow: 0 6px 28px rgba(0, 0, 0, 0.5);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+.loading {
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  color: var(--text-secondary);
+}
+.error { max-width: 34ch; text-align: center; }
+
+#app { position: fixed; inset: 0; }
+.map { position: absolute; inset: 0; }
+
+/* --- top bar -------------------------------------------------------------- */
+
+.topbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  /* Above .panel (4): on desktop the panel is a full-height column starting at
+     top:0, and at a lower z-index it would cover the topbar and eat its
+     clicks. The panel's top padding keeps its content clear of the overlap. */
+  z-index: 5;
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: max(10px, env(safe-area-inset-top)) 12px 10px;
+  background: linear-gradient(var(--surface-1) 55%, transparent);
+  pointer-events: none;
+}
+.topbar > * { pointer-events: auto; }
+.titles { flex: 1; min-width: 0; }
+.topbar h1 { margin: 0; font-size: 17px; font-weight: 650; letter-spacing: -0.01em; }
+.topbar p { margin: 1px 0 0; font-size: 12.5px; color: var(--text-secondary); }
+
+.icon-btn {
+  flex: none;
+  width: 34px; height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-size: 15px; line-height: 1;
+  cursor: pointer;
+}
+.icon-btn:hover { border-color: var(--border-strong); }
+
+/* --- panel ---------------------------------------------------------------- */
+
+.panel {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 4;
+  height: var(--panel-h);
+  transform: translateY(calc(100% - 0px));
+  transition: transform 0.26s cubic-bezier(0.3, 0.8, 0.3, 1);
+  background: var(--surface-1);
+  border-top: 1px solid var(--border);
+  border-radius: 16px 16px 0 0;
+  box-shadow: var(--shadow);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 14px calc(20px + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+}
+body.panel-open .panel { transform: translateY(0); }
+
+.panel-toggle {
+  position: absolute;
+  z-index: 6;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 84px; height: 26px;
+  display: grid; place-items: center;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  background: var(--surface-1);
+  cursor: pointer;
+  transition: bottom 0.26s cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+body.panel-open .panel-toggle { bottom: var(--panel-h); }
+.grip { width: 34px; height: 4px; border-radius: 2px; background: var(--border-strong); }
+
+.card { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.card:last-child { border-bottom: none; }
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text-muted);
+}
+
+/* --- variable picker ------------------------------------------------------ */
+
+.vgroup + .vgroup { margin-top: 12px; }
+.vgroup h3 {
+  margin: 0 0 6px;
+  font-size: 12px; font-weight: 600; color: var(--text-secondary);
+}
+.vlist { display: flex; flex-wrap: wrap; gap: 6px; }
+.vbtn {
+  padding: 7px 11px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  /* 34px tall including padding — comfortably over the 24px touch minimum. */
+  min-height: 34px;
+}
+.vbtn:hover { border-color: var(--border-strong); }
+.vbtn[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+/* --- legend --------------------------------------------------------------- */
+
+.legend { list-style: none; margin: 0; padding: 0; }
+.legend li {
+  display: flex; align-items: center; gap: 9px;
+  padding: 2.5px 0;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.swatch {
+  flex: none;
+  width: 26px; height: 14px;
+  border-radius: 3px;
+  /* A 2px surface gap keeps adjacent ramp steps from bleeding together. */
+  outline: 2px solid var(--surface-1);
+  outline-offset: -0.5px;
+}
+.swatch.outlined { box-shadow: inset 0 0 0 1px var(--border-strong); }
+.legend .lbl { color: var(--text-primary); }
+.legend .note { color: var(--text-muted); font-size: 11.5px; }
+
+.anno-row { margin-top: 10px; font-size: 13px; color: var(--text-secondary); }
+.anno-row label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+
+/* --- prose ---------------------------------------------------------------- */
+
+.prose p { margin: 0 0 8px; color: var(--text-secondary); font-size: 13.5px; }
+.prose p:last-child { margin-bottom: 0; }
+.prose.small p { font-size: 12.5px; }
+.prose a { color: var(--accent); }
+.caveat {
+  padding: 8px 10px;
+  border-left: 3px solid var(--caveat-border);
+  border-radius: 0 6px 6px 0;
+  background: var(--caveat-bg);
+  color: var(--text-primary) !important;
+}
+
+/* --- readout -------------------------------------------------------------- */
+
+#readout h3 { margin: 0 0 2px; font-size: 16px; }
+#readout .sub { margin: 0 0 10px; font-size: 12.5px; color: var(--text-muted); }
+#readout .hint { margin: 0; font-size: 13.5px; color: var(--text-muted); }
+.readout-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.readout-table th {
+  text-align: left; font-weight: 400; color: var(--text-secondary);
+  padding: 3px 0; border-bottom: 1px solid var(--border);
+}
+.readout-table td {
+  text-align: right; padding: 3px 0; border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+.readout-table tr.current th,
+.readout-table tr.current td { font-weight: 700; color: var(--text-primary); }
+
+/* --- rankings ------------------------------------------------------------- */
+
+#rankings h3 {
+  margin: 12px 0 4px;
+  font-size: 12px; font-weight: 600; color: var(--text-secondary);
+}
+#rankings h3:first-child { margin-top: 0; }
+.ranklist { list-style: none; margin: 0; padding: 0; }
+.rank {
+  display: grid;
+  grid-template-columns: 4.6em 1fr auto;
+  gap: 8px; align-items: baseline;
+  width: 100%;
+  padding: 5px 6px;
+  border: none; border-radius: 6px;
+  background: none;
+  color: inherit;
+  text-align: left;
+  font-size: 13px;
+  cursor: pointer;
+}
+.rank:hover { background: var(--surface-2); }
+.rank .v { font-weight: 650; font-variant-numeric: tabular-nums; }
+.rank .s { color: var(--text-muted); font-size: 11.5px; }
+
+/* --- glossary ------------------------------------------------------------- */
+
+.glossary { margin: 0; }
+.glossary dt { margin-top: 10px; font-weight: 650; font-size: 13.5px; }
+.glossary dt:first-child { margin-top: 0; }
+.glossary .exp { font-weight: 400; color: var(--text-secondary); }
+.glossary .exp::before { content: "— "; }
+.glossary dd {
+  margin: 2px 0 0; padding: 0;
+  font-size: 12.5px; color: var(--text-secondary);
+}
+
+/* --- map furniture -------------------------------------------------------- */
+
+.tooltip {
+  position: absolute; top: 0; left: 0;
+  z-index: 7;
+  pointer-events: none;
+  display: flex; flex-direction: column;
+  padding: 6px 9px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+.tooltip span { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+/* `display: flex` above outranks the UA's [hidden] rule, so the empty tooltip
+   would otherwise sit visible in the top-left corner. */
+.tooltip[hidden] { display: none; }
+
+.pin {
+  width: 22px; height: 22px;
+  display: grid; place-items: center;
+  border: 2px solid var(--surface-1);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font: 600 12px/1 ui-serif, Georgia, serif;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+.maplibregl-popup-content {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--text-primary);
+  box-shadow: var(--shadow);
+}
+.maplibregl-popup-content h4 { margin: 0 0 5px; font-size: 13.5px; }
+.maplibregl-popup-content p { margin: 0; font-size: 12.5px; color: var(--text-secondary); }
+.maplibregl-popup-tip { border-top-color: var(--surface-2) !important; border-bottom-color: var(--surface-2) !important; }
+.maplibregl-popup-close-button { color: var(--text-muted); font-size: 17px; }
+
+/* --- desktop -------------------------------------------------------------- */
+
+@media (min-width: 900px) {
+  .panel {
+    top: 0; right: auto; bottom: 0;
+    width: 366px; height: 100%;
+    transform: none;
+    padding: 84px 18px 24px;
+    border-top: none;
+    border-right: 1px solid var(--border);
+    border-radius: 0;
+  }
+  .panel-toggle { display: none; }
+  .topbar {
+    width: 366px;
+    background: var(--surface-1);
+    border-right: 1px solid var(--border);
+    padding: 16px 18px 10px;
+  }
+  .map { left: 366px; }
+  .maplibregl-ctrl-top-right { margin-top: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel, .panel-toggle { transition: none; }
+}

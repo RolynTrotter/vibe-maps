@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5" />
+  <meta name="theme-color" content="#0d366b" />
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;rect width='100' height='100' rx='18' fill='%230d366b'/&gt;&lt;text x='50' y='74' font-size='58' text-anchor='middle'&gt;%F0%9F%97%BA%EF%B8%8F&lt;/text&gt;&lt;/svg&gt;" />
+  <title>vibe-maps</title>
+  <meta name="description" content="Interactive district-level maps of demographic data — caste, religion and land in the 2011 Census of India." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="stylesheet" href="./vendor/maplibre-gl.css" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div id="loading" class="loading"><p>Loading map…</p></div>
+
+  <div id="app" hidden>
+    <div id="map" class="map"></div>
+    <div id="tooltip" class="tooltip" hidden></div>
+
+    <header class="topbar">
+      <div class="titles">
+        <h1 id="dataset-title">vibe-maps</h1>
+        <p id="dataset-subtitle"></p>
+      </div>
+      <button id="theme-toggle" class="icon-btn" type="button" aria-label="Switch theme" title="Switch theme">◐</button>
+    </header>
+
+    <button id="panel-toggle" class="panel-toggle" type="button" aria-label="Show or hide the panel">
+      <span class="grip"></span>
+    </button>
+
+    <aside id="panel" class="panel">
+      <section class="card">
+        <h2>Map</h2>
+        <div id="variables"></div>
+      </section>
+
+      <section class="card">
+        <h2 id="legend-title">Legend</h2>
+        <ul id="legend" class="legend"></ul>
+        <div id="annotations-row" class="anno-row" hidden>
+          <label>
+            <input id="annotations-toggle" type="checkbox" checked />
+            <span id="annotations-count"></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>About this map</h2>
+        <div id="about" class="prose"></div>
+      </section>
+
+      <section class="card">
+        <h2>District</h2>
+        <div id="readout"></div>
+      </section>
+
+      <section class="card">
+        <h2>Ranked</h2>
+        <div id="rankings"></div>
+      </section>
+
+      <section class="card" id="glossary-section">
+        <h2>Glossary</h2>
+        <p class="prose">The census uses legal categories whose names are not self-explanatory.</p>
+        <dl id="glossary" class="glossary"></dl>
+      </section>
+
+      <section class="card">
+        <h2>What this data cannot tell you</h2>
+        <div id="limitations" class="prose"></div>
+      </section>
+
+      <section class="card">
+        <h2>Sources</h2>
+        <div id="attribution" class="prose small"></div>
+        <p class="prose small"><a href="https://github.com/RolynTrotter/vibe-maps">Source code and data pipeline</a></p>
+      </section>
+    </aside>
+  </div>
+
+  <script src="./vendor/maplibre-gl.js"></script>
+  <script src="./vendor/pmtiles.js"></script>
+  <script type="module" src="./js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>

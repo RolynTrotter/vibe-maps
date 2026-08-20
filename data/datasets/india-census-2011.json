@@ -1,0 +1,651 @@
+{
+  "id": "india-census-2011",
+  "title": "India · Census 2011",
+  "subtitle": "Caste, religion and land in 640 districts",
+  "year": 2011,
+  "attribution": {
+    "data": "Primary Census Abstract, Census of India 2011",
+    "boundaries": "DataMeet, Census 2011 district boundaries (CC-BY 4.0)",
+    "note": "District boundaries are as of 2011. Telangana (2014) and the Jammu & Kashmir / Ladakh reorganisation (2019) had not happened yet; this is deliberately a 2011 snapshot, not a modern map."
+  },
+  "geometry": {
+    "pmtiles": "data/india-districts-2011.pmtiles",
+    "sourceLayer": "districts",
+    "joinKey": "censuscode",
+    "nameProp": "DISTRICT",
+    "stateProp": "ST_NM",
+    "noDataKey": 0,
+    "center": [
+      82.8,
+      22.6
+    ],
+    "zoom": 3.6,
+    "maxBounds": [
+      [
+        25,
+        -35
+      ],
+      [
+        145,
+        70
+      ]
+    ],
+    "bounds": [
+      [
+        67.9,
+        6.5
+      ],
+      [
+        97.6,
+        36.2
+      ]
+    ]
+  },
+  "table": {
+    "url": "data/india-census-2011.json"
+  },
+  "palettes": {
+    "seq-blue": {
+      "light": [
+        "#cde2fb",
+        "#9ec5f4",
+        "#6da7ec",
+        "#3987e5",
+        "#256abf",
+        "#184f95",
+        "#0d366b"
+      ],
+      "dark": [
+        "#44658f",
+        "#3c77c1",
+        "#388aed",
+        "#4a9fff",
+        "#75b6ff",
+        "#9fccff",
+        "#c3e1ff"
+      ]
+    },
+    "seq-orange": {
+      "light": [
+        "#ffd4c4",
+        "#fdaa8c",
+        "#f57c4f",
+        "#eb4300",
+        "#c32700",
+        "#981500",
+        "#6d0800"
+      ],
+      "dark": [
+        "#874b35",
+        "#b74d23",
+        "#e25206",
+        "#ff6419",
+        "#ff8f63",
+        "#ffb699",
+        "#ffd8c6"
+      ]
+    },
+    "div-orange-blue": {
+      "light": [
+        "#6d0800",
+        "#c32700",
+        "#f57c4f",
+        "#f0efec",
+        "#6da7ec",
+        "#256abf",
+        "#0d366b"
+      ],
+      "dark": [
+        "#ff8f63",
+        "#e25206",
+        "#b74d23",
+        "#383835",
+        "#3c77c1",
+        "#4a9fff",
+        "#9fccff"
+      ]
+    }
+  },
+  "groups": [
+    {
+      "id": "caste",
+      "label": "Caste"
+    },
+    {
+      "id": "land",
+      "label": "Land & labour"
+    },
+    {
+      "id": "religion",
+      "label": "Religion"
+    },
+    {
+      "id": "living",
+      "label": "Living conditions"
+    }
+  ],
+  "variables": [
+    {
+      "id": "sc_share",
+      "label": "Scheduled Caste share of population",
+      "short": "SC share",
+      "group": "caste",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "SC",
+        "den": "Population"
+      },
+      "bins": [
+        5,
+        10,
+        15,
+        20,
+        25,
+        30
+      ],
+      "palette": "seq-blue",
+      "featured": true,
+      "description": "Scheduled Castes as a percentage of total district population. The state-level version of this map circulates widely; the district version mostly does not, even though the census publishes these figures down to the village.",
+      "caveat": "Zero is a real value here, not missing data. Nagaland, Lakshadweep and the Andamans list no Scheduled Castes at all — they are drawn in the zero style, not the no-data style.",
+      "annotations": [
+        {
+          "lng": 75.35,
+          "lat": 31.35,
+          "title": "Punjab: high everywhere, highest in two places",
+          "body": "Punjab is the highest-SC state (31.9%) and it is not uniform — districts run from 21.7% to 42.5%, a two-fold spread. The Doaba is high as expected (Shahid Bhagat Singh Nagar 42.5%, Jalandhar 39.0%), but the top of the list is shared with the southwest Malwa cotton belt (Muktsar 42.3%, Firozpur 42.2%). The concentration is real; the Doaba does not have it to itself."
+        },
+        {
+          "lng": 79.4,
+          "lat": 10.8,
+          "title": "The Kaveri delta, as predicted",
+          "body": "Tamil Nadu's highest-SC districts are the wet-rice delta: Thiruvarur 34.1%, Nagapattinam 31.5%, Perambalur 31.0%, Cuddalore 29.3%, Ariyalur 23.3%. They carry 39–55% agricultural labourers, well above the state pattern. The one intruder is The Nilgiris (32.1%) — a hill-plantation district with only 23% agricultural labour, a different mechanism entirely."
+        },
+        {
+          "lng": 94.2,
+          "lat": 25.9,
+          "title": "The northeast lists no Scheduled Castes",
+          "body": "Nagaland, Mizoram, Arunachal Pradesh and the island territories have essentially no SC population. This is not a data gap — the subordinate stratum here is classified as Scheduled Tribe instead. Switch to the SC−ST map to see the two categories trade places."
+        },
+        {
+          "lng": 76.4,
+          "lat": 9.7,
+          "title": "Kerala is deflated by law, not by absence",
+          "body": "Kerala reads 9.1%, low for a state with a large Dalit-descended population. SC status was restricted to Hindus by the 1950 Presidential Order, extended to Sikhs in 1956 and Buddhists in 1990. Dalit-descended Christians and Muslims remain excluded, so mass conversion removes people from the count without removing them from the caste order."
+        }
+      ],
+      "zeroDistinct": true
+    },
+    {
+      "id": "st_share",
+      "label": "Scheduled Tribe share of population",
+      "short": "ST share",
+      "group": "caste",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "ST",
+        "den": "Population"
+      },
+      "bins": [
+        1,
+        5,
+        15,
+        30,
+        50,
+        75
+      ],
+      "palette": "seq-orange",
+      "description": "Scheduled Tribes as a percentage of district population. Strongly topographic — the central Indian forest belt, the Northeast hills, and the Western Ghats margins.",
+      "annotations": [
+        {
+          "lng": 81.9,
+          "lat": 19.6,
+          "title": "The central Indian forest belt",
+          "body": "A continuous high-ST band runs from eastern Gujarat through Madhya Pradesh, Chhattisgarh, Jharkhand and into Odisha. Compare against the SC map: this band is where SC share falls away."
+        }
+      ],
+      "zeroDistinct": true
+    },
+    {
+      "id": "sc_minus_st",
+      "label": "SC share minus ST share",
+      "short": "SC − ST",
+      "group": "caste",
+      "unit": "pp",
+      "formula": {
+        "type": "diff",
+        "a": {
+          "num": "SC",
+          "den": "Population"
+        },
+        "b": {
+          "num": "ST",
+          "den": "Population"
+        }
+      },
+      "bins": [
+        -50,
+        -20,
+        -5,
+        5,
+        20,
+        35
+      ],
+      "palette": "div-orange-blue",
+      "diverging": true,
+      "description": "Which of the two scheduled categories dominates a district. Blue: more SC than ST. Orange: more ST than SC. Grey: the two are within 5 points of each other.",
+      "caveat": "Across all 640 districts SC share and ST share correlate at r = −0.61 — the strongest relationship in this dataset. The two categories substitute for each other regionally rather than stacking.",
+      "annotations": [
+        {
+          "lng": 77.0,
+          "lat": 29.5,
+          "title": "Punjab, Haryana and Delhi: nearly all SC, no ST",
+          "body": "These states have almost no Scheduled Tribe population, so the entire subordinate agrarian stratum is classified SC. That is a large part of why Punjab tops the SC table — not that it has more Dalits than Bihar, but that it has no ST category absorbing any of them."
+        }
+      ]
+    },
+    {
+      "id": "ag_labour",
+      "label": "Agricultural labourers, share of workers",
+      "short": "Agricultural labour",
+      "group": "land",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Agricultural_Workers",
+        "den": "Workers"
+      },
+      "bins": [
+        10,
+        20,
+        30,
+        40,
+        50,
+        60
+      ],
+      "palette": "seq-blue",
+      "description": "Workers who labour on land they do not own, as a share of all workers. This is the landlessness measure — the closest thing the Primary Census Abstract has to a proxy for agrarian caste subordination.",
+      "caveat": "Correlates +0.23 with SC share across districts. Read together with the cultivators map, which is its mirror image (−0.17)."
+    },
+    {
+      "id": "cultivators",
+      "label": "Cultivators, share of workers",
+      "short": "Cultivators",
+      "group": "land",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Cultivator_Workers",
+        "den": "Workers"
+      },
+      "bins": [
+        10,
+        20,
+        30,
+        40,
+        55,
+        70
+      ],
+      "palette": "seq-orange",
+      "description": "Workers farming their own land. The inverse of the agricultural-labour map: where cultivators are common, SC share tends to be lower."
+    },
+    {
+      "id": "sc_eligible",
+      "label": "Population in religions where SC status is legally available",
+      "short": "SC-eligible religions",
+      "group": "religion",
+      "unit": "%",
+      "formula": {
+        "type": "sum_ratio",
+        "nums": [
+          "Hindus",
+          "Sikhs",
+          "Buddhists"
+        ],
+        "den": "Population"
+      },
+      "bins": [
+        40,
+        70,
+        85,
+        90,
+        95,
+        98
+      ],
+      "palette": "seq-blue",
+      "description": "Hindus, Sikhs and Buddhists as a share of population — the three religions in which a person can legally hold Scheduled Caste status. Christians and Muslims of Dalit descent are excluded by the Constitution (Scheduled Castes) Order 1950 and its amendments.",
+      "caveat": "This is a map of legal eligibility, not of caste itself. Where it is low, the SC map understates the Dalit-descended population rather than measuring its absence."
+    },
+    {
+      "id": "muslim_share",
+      "label": "Muslim share of population",
+      "short": "Muslim",
+      "group": "religion",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Muslims",
+        "den": "Population"
+      },
+      "bins": [
+        2,
+        5,
+        10,
+        20,
+        40,
+        70
+      ],
+      "palette": "seq-orange",
+      "description": "Correlates −0.20 with SC share — one of the two religions excluded from SC status."
+    },
+    {
+      "id": "christian_share",
+      "label": "Christian share of population",
+      "short": "Christian",
+      "group": "religion",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Christians",
+        "den": "Population"
+      },
+      "bins": [
+        0.5,
+        2,
+        5,
+        15,
+        40,
+        80
+      ],
+      "palette": "seq-orange",
+      "description": "Correlates −0.45 with SC share, the strongest religious signal. Concentrated in the Northeast, Kerala and coastal Goa.",
+      "caveat": "In Kerala this reflects conversion out of a caste order that converts did not thereby leave. In the Northeast it reflects a population that was never inside the SC framework to begin with. Same colour, two different stories."
+    },
+    {
+      "id": "sikh_share",
+      "label": "Sikh share of population",
+      "short": "Sikh",
+      "group": "religion",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Sikhs",
+        "den": "Population"
+      },
+      "bins": [
+        0.2,
+        1,
+        5,
+        20,
+        50,
+        75
+      ],
+      "palette": "seq-blue",
+      "description": "Correlates +0.37 with SC share. Sikh Dalits were brought into SC status in 1956, which is part of why Punjab's figure is the country's highest."
+    },
+    {
+      "id": "buddhist_share",
+      "label": "Buddhist share of population",
+      "short": "Buddhist",
+      "group": "religion",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Buddhists",
+        "den": "Population"
+      },
+      "bins": [
+        0.1,
+        0.5,
+        2,
+        10,
+        30,
+        60
+      ],
+      "palette": "seq-blue",
+      "description": "Two entirely different populations wear this colour, which is why the national correlation with SC share is a misleading −0.19.",
+      "caveat": "Within Maharashtra alone the correlation is +0.60: these are Ambedkarite Buddhists, Dalits who converted in and after 1956 and who kept SC status by the 1990 amendment. Nationally that signal is swamped by Himalayan and Northeastern Buddhists — Tawang is 70% Buddhist and 0.0% SC. A textbook sign-flip; trust the map, not the coefficient.",
+      "annotations": [
+        {
+          "lng": 77.2,
+          "lat": 20.2,
+          "title": "Maharashtra: Buddhist means ex-Dalit",
+          "body": "Within Maharashtra, Buddhist share and SC share correlate +0.60. Ambedkar's 1956 conversion took hundreds of thousands of Mahars out of Hinduism; the 1990 amendment let them keep SC status. Akola is 18.1% Buddhist and 20.1% SC."
+        },
+        {
+          "lng": 91.9,
+          "lat": 27.6,
+          "title": "The Himalayas: Buddhist means something else",
+          "body": "Tawang is 69.9% Buddhist and 0.0% SC. Leh 66.4% and 0.4%. These are Tibetan-tradition Buddhist populations with no relationship to the caste order — and they are what drags the national correlation negative."
+        }
+      ]
+    },
+    {
+      "id": "lit_gap",
+      "label": "Male−female literacy gap",
+      "short": "Literacy gap",
+      "group": "living",
+      "unit": "pp",
+      "formula": {
+        "type": "diff",
+        "a": {
+          "num": "Male_Literate",
+          "den": "Male"
+        },
+        "b": {
+          "num": "Female_Literate",
+          "den": "Female"
+        }
+      },
+      "bins": [
+        5,
+        9,
+        12,
+        15,
+        18,
+        22
+      ],
+      "palette": "seq-blue",
+      "description": "Percentage points by which male literacy exceeds female literacy. Correlates +0.19 with SC share."
+    },
+    {
+      "id": "literacy",
+      "label": "Literacy rate",
+      "short": "Literacy",
+      "group": "living",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Literate",
+        "den": "Population"
+      },
+      "bins": [
+        45,
+        52,
+        58,
+        64,
+        70,
+        78
+      ],
+      "palette": "seq-blue",
+      "description": "Literate people as a share of total population.",
+      "caveat": "District literacy has essentially no relationship to SC share (r = +0.04). That is a finding, not a failure: caste disadvantage in literacy is a gap *within* districts, and this table only holds district totals. See the limitations note."
+    },
+    {
+      "id": "open_defecation",
+      "label": "Households with no latrine on the premises",
+      "short": "No latrine",
+      "group": "living",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Not_having_latrine_facility_within_the_premises_Alternative_source_Open_Households",
+        "den": "Households"
+      },
+      "bins": [
+        10,
+        25,
+        40,
+        55,
+        65,
+        72
+      ],
+      "palette": "seq-orange",
+      "description": "Households without a latrine within the premises, using open defecation. Correlates +0.17 with SC share."
+    },
+    {
+      "id": "dilapidated",
+      "label": "Households in dilapidated housing",
+      "short": "Dilapidated housing",
+      "group": "living",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Condition_of_occupied_census_houses_Dilapidated_Households",
+        "den": "Households"
+      },
+      "bins": [
+        1.5,
+        2.5,
+        3.5,
+        5,
+        7,
+        10
+      ],
+      "palette": "seq-orange",
+      "description": "Census-classified dilapidated dwellings. Correlates +0.20 with SC share — the strongest of the deprivation measures here."
+    },
+    {
+      "id": "water_away",
+      "label": "Households fetching water from away",
+      "short": "Water from away",
+      "group": "living",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Location_of_drinking_water_source_Away_Households",
+        "den": "Households"
+      },
+      "bins": [
+        4,
+        8,
+        13,
+        20,
+        28,
+        35
+      ],
+      "palette": "seq-orange",
+      "description": "Households whose drinking water source is neither within nor near the premises."
+    },
+    {
+      "id": "rural",
+      "label": "Rural households",
+      "short": "Rural",
+      "group": "living",
+      "unit": "%",
+      "formula": {
+        "type": "ratio",
+        "num": "Rural_Households",
+        "den": "Households"
+      },
+      "bins": [
+        45,
+        65,
+        78,
+        86,
+        92,
+        96
+      ],
+      "palette": "seq-blue",
+      "description": "Share of households classified rural. Context for every other map on this list."
+    }
+  ],
+  "limitations": [
+    "This dataset records where Scheduled Caste people live, not how they fare. The Primary Census Abstract publishes literacy, work and housing as district totals covering everyone, not broken out by caste — so a district's literacy rate says nothing about the literacy of its SC residents. District literacy correlates +0.04 with SC share, and household income below Rs 45,000 correlates −0.07. Reading those as 'caste does not affect literacy or income' would be an ecological fallacy: the gaps are inside districts, where this table cannot see.",
+    "Every correlation quoted here is between districts, not between people. A district with many agricultural labourers and many SC residents is not evidence that those are the same people, though other sources establish that they largely are.",
+    "SC status is a legal category, not a descent category. It is unavailable to Christians and Muslims of Dalit descent, which deflates Kerala and inflates Punjab relative to any measure of caste position itself."
+  ],
+  "glossary": [
+    {
+      "term": "SC",
+      "expansion": "Scheduled Caste",
+      "note": "A legal category listed in the Constitution (Scheduled Castes) Order, 1950. Communities historically subjected to untouchability, entitled to reservation in education, employment and legislatures. Roughly 16.6% of India's population in 2011. 'Scheduled' means literally listed on a government schedule — the list is specific to each state."
+    },
+    {
+      "term": "ST",
+      "expansion": "Scheduled Tribe",
+      "note": "The parallel legal category for India's indigenous or 'tribal' peoples, listed under a separate 1950 Order. About 8.6% of the population. Largely distinct from the caste order rather than at the bottom of it — which is why SC and ST substitute for each other regionally instead of stacking."
+    },
+    {
+      "term": "Dalit",
+      "expansion": "the communities the SC schedule lists",
+      "note": "The self-chosen political term (from Marathi, 'broken' or 'ground down') for people of formerly-untouchable descent. Not identical to SC: Dalit describes descent and social position, SC describes legal status. Dalit Christians and Dalit Muslims are Dalit but not SC — the distinction the 'SC-eligible religions' map is about."
+    },
+    {
+      "term": "Adivasi",
+      "expansion": "literally 'original inhabitant'",
+      "note": "The comparable self-chosen term for ST communities."
+    },
+    {
+      "term": "OBC",
+      "expansion": "Other Backward Classes",
+      "note": "A third, larger reserved category between SC/ST and the rest. The 2011 Census did not enumerate OBCs, so no map here can show them."
+    },
+    {
+      "term": "PCA",
+      "expansion": "Primary Census Abstract",
+      "note": "The Census of India's headline table of population counts by district, and the source of every number in this app. Published down to the village; here used at district level."
+    },
+    {
+      "term": "PCA-SC / PCA-ST",
+      "expansion": "Primary Census Abstract for Scheduled Castes / Tribes",
+      "note": "Separate editions of the same abstract computed for the SC and ST populations alone. These would show how SC people fare, not just where they live. Not yet in this app."
+    },
+    {
+      "term": "censuscode",
+      "expansion": "the Census district identifier",
+      "note": "A number from 1 to 640 that identifies a 2011 district. Used to join population figures to map polygons. Names are never used for this — transliteration varies between sources, and names repeat across states (several Aurangabads, Bilaspurs, Hamirpurs, Pratapgarhs)."
+    },
+    {
+      "term": "pp",
+      "expansion": "percentage points",
+      "note": "The unit for a difference between two percentages. A move from 20% to 25% is 5 pp, not 5%."
+    },
+    {
+      "term": "r",
+      "expansion": "Pearson correlation coefficient",
+      "note": "Runs from -1 to +1. Measures how tightly two quantities move together across the 640 districts. Here it always compares districts, never people."
+    },
+    {
+      "term": "ecological fallacy",
+      "expansion": "",
+      "note": "Concluding something about individuals from a pattern between places. If high-SC districts have more agricultural labourers, that does not by itself prove SC individuals are the labourers. The trap this dataset is most likely to lead you into."
+    },
+    {
+      "term": "UT",
+      "expansion": "Union Territory",
+      "note": "A territory administered directly by the national government rather than as a state — Delhi, Chandigarh, Lakshadweep, the Andamans and others."
+    },
+    {
+      "term": "Doaba, Malwa, Majha",
+      "expansion": "the three regions of Punjab",
+      "note": "Doaba is the land between the Beas and Sutlej rivers; Malwa lies south of the Sutlej; Majha north of the Beas. Doaba is conventionally described as Punjab's Dalit heartland — the SC map shows that is true but incomplete."
+    },
+    {
+      "term": "Kaveri delta",
+      "expansion": "",
+      "note": "The wet-rice plain of eastern Tamil Nadu, around Thanjavur, Thiruvarur and Nagapattinam. Intensive irrigated paddy farming with heavy demand for hired labour."
+    },
+    {
+      "term": "Ambedkarite",
+      "expansion": "",
+      "note": "Followers of B. R. Ambedkar, the Dalit jurist who chaired the drafting committee of India's Constitution and who publicly converted to Buddhism in 1956, with hundreds of thousands of Dalit followers. A 1990 amendment let Buddhist converts keep SC status."
+    },
+    {
+      "term": "crore / lakh",
+      "expansion": "10 million / 100 thousand",
+      "note": "South Asian number words used throughout Indian official statistics. India's 2011 population was 121 crore."
+    }
+  ]
+}

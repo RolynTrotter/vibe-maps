@@ -1,0 +1,30 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22']
+    name: test (node ${{ matrix.node }})
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # No install step: the runtime modules are dependency-free and the tests
+      # run on node's built-in runner against the committed data artifacts.
+      - run: npm test
+      # The data artifacts are committed, so their integrity is checkable in CI
+      # without rebuilding them from the source shapefile.
+      - run: npm run validate
